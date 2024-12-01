@@ -8,12 +8,25 @@ async function query(queryObject) {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
   })
-  await client.connect()
 
-  const result = await client.query(queryObject)
-  await client.end()
+  console.log('Credenciais', {
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    user: process.env.POSTGRES_USER,
+    database: process.env.POSTGRES_DB,
+    password: process.env.POSTGRES_PASSWORD,
+  })
 
-  return result
+  try {
+    await client.connect()
+    const result = await client.query(queryObject)
+    return result
+  } catch (err) {
+    console.log(err)
+    throw err
+  } finally {
+    await client.end()
+  }
 }
 
 export default {
